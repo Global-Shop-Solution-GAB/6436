@@ -1,0 +1,1440 @@
+Program.Sub.ScreenSU.Start
+Gui.IssueMaterial..Create
+Gui.IssueMaterial..Caption("Issue Material")
+Gui.IssueMaterial..Size(26295,11100)
+Gui.IssueMaterial..MinX(0)
+Gui.IssueMaterial..MinY(0)
+Gui.IssueMaterial..Position(0,0)
+Gui.IssueMaterial..BackColor(-2147483633)
+Gui.IssueMaterial..MousePointer(0)
+Gui.IssueMaterial..Event(UnLoad,Form_UnLoad)
+Gui.IssueMaterial.GsMain.Create(GsGridControl)
+Gui.IssueMaterial.GsMain.Size(26010,10155)
+Gui.IssueMaterial.GsMain.Position(75,585)
+Gui.IssueMaterial.GsMain.Event(RowCellClick,GsMain_RowCellClick)
+Gui.IssueMaterial.GsMain.Anchor(15)
+Gui.IssueMaterial.GsMain.Event(CellValueChanged,GsMain_CellValueChanged)
+Gui.IssueMaterial.proBar1.Create(ProgressBar)
+Gui.IssueMaterial.proBar1.Size(3735,120)
+Gui.IssueMaterial.proBar1.Position(75,390)
+Gui.IssueMaterial.lblStatus.Create(Label,"Label",True,6480,255,0,60,120,True,0,"Arial",8,-2147483633,0)
+Gui.IssueMaterial.cmdIssue.Create(Button)
+Gui.IssueMaterial.cmdIssue.Size(1155,375)
+Gui.IssueMaterial.cmdIssue.Position(7800,735)
+Gui.IssueMaterial.cmdIssue.Caption("Issue Multi")
+Gui.IssueMaterial.cmdIssue.FontStyle(True,False,False,False,False)
+Gui.IssueMaterial.cmdIssue.Event(Click,cmdIssue_Click)
+Gui.MultiLot..Create
+Gui.MultiLot..Caption("Material Lot for Selected Jobs")
+Gui.MultiLot..Size(15315,10575)
+Gui.MultiLot..MinX(0)
+Gui.MultiLot..MinY(0)
+Gui.MultiLot..Position(0,0)
+Gui.MultiLot..BackColor(-2147483633)
+Gui.MultiLot..MousePointer(0)
+Gui.MultiLot..Event(UnLoad,MultiLot_UnLoad)
+Gui.MultiLot..MaxButton(False)
+Gui.MultiLot..Sizeable(False)
+Gui.MultiLot.GsGcLot.Create(GsGridControl)
+Gui.MultiLot.GsGcLot.Size(15105,9555)
+Gui.MultiLot.GsGcLot.Position(15,30)
+Gui.MultiLot.GsGcLot.Event(CellValueChanged,GsGcLot_CellValueChanged)
+Gui.MultiLot.GsGcLot.Event(RowCellClick,GsGcLot_RowCellClick)
+Gui.MultiLot.cmdJobIssue.Create(Button)
+Gui.MultiLot.cmdJobIssue.Size(1500,375)
+Gui.MultiLot.cmdJobIssue.Position(13530,9660)
+Gui.MultiLot.cmdJobIssue.Caption("Issue to Jobs")
+Gui.MultiLot.cmdJobIssue.FontStyle(True,False,False,False,False)
+Gui.MultiLot.cmdJobIssue.Event(Click,cmdJobIssue_Click)
+Gui.MultiLot.lblMatch.Create(Label,"Qty to Match:",True,1185,255,0,11025,9780,True,1,"Arial",8,-2147483633,0)
+Gui.MultiLot.lblMatch.FontStyle(True,False,False,False,False)
+Gui.MultiLot.txtMatch.Create(TextBox,"",True,1215,300,0,12255,9690,False,2,"Arial",8,-2147483643,1)
+Gui.MultiLot.txtMatch.Locked(True)
+Gui.MultiLot.txtMatch.Mask("###,##0.0000")
+Gui.MultiJob..Create
+Gui.MultiJob..Caption("Issue Multi Lot to Job(s)")
+Gui.MultiJob..Size(15315,10575)
+Gui.MultiJob..MinX(0)
+Gui.MultiJob..MinY(0)
+Gui.MultiJob..Position(0,0)
+Gui.MultiJob..BackColor(-2147483633)
+Gui.MultiJob..MousePointer(0)
+Gui.MultiJob..Event(UnLoad,MultiJob_UnLoad)
+Gui.MultiJob..MaxButton(False)
+Gui.MultiJob..Sizeable(False)
+Gui.MultiJob.GsGcIssue.Create(GsGridControl)
+Gui.MultiJob.GsGcIssue.Size(15105,9555)
+Gui.MultiJob.GsGcIssue.Position(15,30)
+Gui.MultiJob.GsGcIssue.Event(CellValueChanged,GsGcIssue_CellValueChanged)
+Gui.MultiJob.GsGcIssue.Event(RowCellClick,GsGcIssue_RowCellClick)
+Gui.MultiJob.cmdConfirm.Create(Button)
+Gui.MultiJob.cmdConfirm.Size(1500,375)
+Gui.MultiJob.cmdConfirm.Position(13530,9660)
+Gui.MultiJob.cmdConfirm.Caption("Confirm Issue")
+Gui.MultiJob.cmdConfirm.Event(Click,cmdConfirm_Click)
+Gui.MultiJob.cmdConfirm.FontStyle(True,False,False,False,False)
+Gui.MultiJob.lblIssue.Create(Label,"Qty Remaining to Issue:",True,2160,255,0,10050,9780,True,1,"Arial",8,-2147483633,0)
+Gui.MultiJob.lblIssue.FontStyle(True,False,False,False,False)
+Gui.MultiJob.txtIssue.Create(TextBox,"",True,1215,300,0,12270,9690,True,2,"Arial",8,-2147483643,1)
+Gui.MultiJob.txtIssue.Locked(True)
+Gui.MultiJob.txtIssue.Mask("###,##0.0000")
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sRet.Declare
+v.Global.iLot.Declare
+v.Global.sPart.Declare
+v.Global.sBin.Declare
+v.Global.sLot.Declare
+v.Global.sHeat.Declare
+v.Global.sSerial.Declare
+v.Global.sLoc.Declare
+v.Global.sRev.Declare
+v.Global.fQtyIssue.Declare
+v.Global.fQtyMatch.Declare
+v.Global.fQtyJobs.Declare
+v.Global.sGVR.Declare
+v.Global.iRecIssue.Declare
+Program.External.Include.Library("450100.lib")
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+f.Intrinsic.Control.Try
+	v.Local.sError.Declare	
+
+	F.ODBC.Connection!conx.OpenCompanyConnection(300)
+	
+	v.Global.iRecIssue.Set(0)
+	
+	gui.IssueMaterial.lblStatus.Caption("Loading...")
+	F.Intrinsic.Control.CallSub("CreateContextMenus")
+	
+	F.Intrinsic.Control.CallSub("CreateTable")
+	
+	gui.IssueMaterial..Show
+	
+	F.Intrinsic.Control.CallSub("LoadDTJobCommitments")
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}GAB Version: {5}}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry	
+Program.Sub.Main.End
+
+Program.Sub.Refresh.Start
+f.Intrinsic.Control.Try
+	v.Local.sError.Declare
+	
+'	f.Intrinsic.Control.CallSub(Serialize)
+	
+	F.Intrinsic.Control.CallSub("LoadDTJobCommitments")
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}GAB Version: {5}}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry	
+Program.Sub.Refresh.End
+
+Program.Sub.CreateTable.Start
+	V.Local.bExists.Declare(boolean)
+	
+	F.ODBC.Connection!conx.TableExists("GAB_5676_NOTES", V.Local.bExists)
+	F.Intrinsic.Control.If(V.Local.bExists, =, False)
+		F.ODBC.Connection!conx.Execute("CREATE TABLE GAB_5676_NOTES (JOB CHAR(6), SUFFIX CHAR(3), SEQUENCE CHAR(6), NOTES CHAR(30), DATE_CREATED DATE);")
+		F.ODBC.Connection!conx.Execute("CREATE INDEX GAB_5676_NOTES01 USING 0  ON GAB_5676_NOTES(JOB)")
+		F.ODBC.Connection!conx.Execute("CREATE INDEX GAB_5676_NOTES02 USING 1  ON GAB_5676_NOTES(SUFFIX)")
+		F.ODBC.Connection!conx.Execute("CREATE INDEX GAB_5676_NOTES03 USING 2  ON GAB_5676_NOTES(SEQUENCE)")
+	F.Intrinsic.Control.EndIf	
+Program.Sub.CreateTable.End
+
+Program.Sub.LoadDTJobCommitments.Start
+f.Intrinsic.Control.Try
+	v.Local.sError.Declare
+	v.Local.iCnt.Declare
+	v.Local.sFilter.Declare
+	v.Local.sPart.Declare
+	v.Local.sLocation.Declare
+	v.Local.fOnhand.Declare	
+	
+	gui.IssueMaterial.lblStatus.Caption("Getting commitments...")
+	
+	F.Intrinsic.Control.If(V.DataTable.dtJobCommitments.Exists)
+		F.Data.DataTable.Close("dtJobCommitments")
+	F.Intrinsic.Control.EndIf
+	
+	F.Data.DataTable.CreateFromSQL("dtJobCommitments", "conx", "Select RTrim(A.Part) as Part,A.Location,B.Description,H.Part as MfgPart,H.Product_Line as MfgPL,H.Customer,H.Flag_Hold,H.Priority, A.Job, A.Suffix, N.Notes as Notes, A.Sequence, (A.Qty_Committed - A.Qty_Issued) as QtyRequired, B.Qty_OnHand, A.Date_Due,(B.Qty_OnOrder_Wo + B.Qty_OnOrder_PO) as QtyOnOrder, B.Qty_Required as Total_Required, RTRIM(H.Customer_PO) AS Customer_PO, RTRIM(H.Comments_1) AS Comments_1, RTRIM(H.Comments_2) AS Comments_2 from V_JOB_COMMITMENTS A left join V_Inventory_Mstr B on A.Part = B.Part and A.Location = B.Location left join V_Job_Header H on A.Job = H.Job and A.Suffix = H.Suffix left join GAB_5676_NOTES N on A.Job = N.Job and A.Suffix = N.Suffix and A.Sequence = N.Sequence", True)	
+	f.Data.DataTable.AddColumn("dtJobCommitments","RunningTotal","Float",0)
+	f.Data.DataTable.AddColumn("dtJobCommitments","Select","boolean",false)
+	f.Data.DataTable.AddExpressionColumn("dtJobCommitments","JOBSUF","string","JOB+SUFFIX")
+	
+	'Clone
+	f.Intrinsic.Control.If(v.DataTable.dtJCMT.Exists)
+		f.Data.DataTable.Close("dtJCMT")
+	f.Intrinsic.Control.EndIf
+	f.Data.DataTable.Clone("dtJobCommitments","dtJCMT",True)	
+	f.Data.DataTable.AddColumn("dtJCMT","Ready","String","")	
+	
+	'Get Distinct Part
+	gui.IssueMaterial.lblStatus.Caption("Getting distinct Parts...")
+	f.Data.DataView.Create("dtJobCommitments","dvJobCommitments")
+	f.Intrinsic.Control.If(v.DataTable.Parts.Exists)
+		f.Data.DataTable.Close("Parts")
+	f.Intrinsic.Control.EndIf
+	f.Data.DataView.ToDataTableDistinct("dtJobCommitments","dvJobCommitments","Parts","Part*!*Location",True)
+	f.Data.DataView.Create("Parts","dvParts")
+	
+	'Turn on indicator
+	f.Intrinsic.Control.If(v.DataTable.dtJobCommitments.RowCount,>,0)
+		gui.IssueMaterial.proBar1.Max(v.DataTable.Parts.RowCount)
+		gui.IssueMaterial.proBar1.Visible(True)
+	f.Intrinsic.Control.EndIf	
+	
+	'Loop each Part in the distinct Part,Location list and do the MRP calculation
+	gui.IssueMaterial.lblStatus.Caption("MRP calculation...")
+	f.Intrinsic.Control.For(v.Local.iCnt,0,v.DataTable.Parts.RowCount--,1)
+		gui.IssueMaterial.proBar1.Value(v.Local.iCnt)
+		v.Local.sPart.Set(v.DataTable.Parts(v.Local.iCnt).Part!FieldValString)
+		v.Local.sLocation.Set(v.DataTable.Parts(v.Local.iCnt).Location!FieldValString)
+		f.Intrinsic.String.Build("Part = '{0}' and Location = '{1}'",v.Local.sPart.PSQLFriendly,v.Local.sLocation,v.Local.sFilter)
+		f.Data.DataView.SetFilter("dtJobCommitments","dvJobCommitments",v.Local.sFilter)
+		f.Data.DataView.SetSort("dtJobCommitments","dvJobCommitments","Date_Due asc,Job,Suffix,Sequence")
+		f.Data.DataView.ToDataTable("dtJobCommitments","dvJobCommitments","dtTemp",True)
+		'Running Total Requirement
+		v.Local.fOnhand.Set(v.DataTable.dtTemp(0).Qty_Onhand!FieldValString)
+		f.Data.DataTable.RunningTotal("dtTemp","QtyRequired",v.Local.fOnhand,"-","RunningTotal")
+		f.Data.DataTable.AddExpressionColumn("dtTemp","Ready","String","IIF([RunningTotal] >= 0,'Y','')")
+		
+		f.Data.DataTable.Merge("dtTemp","dtJCMT",True,3)
+		f.Data.DataTable.Close("dtTemp")
+		
+	f.Intrinsic.Control.Next(v.Local.iCnt)
+	gui.IssueMaterial.proBar1.Visible(False)
+	
+	f.Data.DataTable.Close("dtJobCommitments")
+	F.Data.DataView.Create("dtJCMT","dvJCMT",22,"","Date_Due ASC, Job ASC, Suffix ASC")
+	f.Data.DataView.ToDataTable("dtJCMT","dvJCMT","dtJCMT2",True)
+	f.Data.DataTable.Close("dtJCMT")
+	f.Data.DataView.Create("dtJCMT2","dvJCMT2")
+	f.Data.DataView.ToDataTable("dtJCMT2","dvJCMT2","dtJCMT",True)
+	f.Data.DataTable.Close("dtJCMT2")
+	f.Data.DataView.Create("dtJCMT","dvJCMT",22)
+	
+	gui.IssueMaterial.lblStatus.Caption("Formatting grid...")
+	F.Intrinsic.Control.CallSub("LoadGVJobCommitments")
+	gui.IssueMaterial.lblStatus.Caption("")
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}GAB Version: {5}}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry	
+Program.Sub.LoadDTJobCommitments.End
+
+Program.Sub.LoadGVJobCommitments.Start
+f.Intrinsic.Control.Try
+	v.Local.sError.Declare
+	
+	gui.IssueMaterial.GsMain.AddGridviewFromDataview("gvJobCommitments","dtJCMT","dvJCMT")
+	
+	gui.IssueMaterial.GsMain.SuspendLayout()
+	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","JOBSUF","Visible",false)
+	
+	'General grid format
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","AllowSort",True)
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","AllowFilter",True)
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","OptionsFindAlwaysVisible",True)
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","EnableAppearanceOddRow",False)
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","OptionsViewShowAutoFilterRow",True)
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","OptionsViewColumnAutoWidth",False)	
+	gui.IssueMaterial.GsMain.SetGridViewProperty("gvJobCommitments","ColumnPanelRowHeight","35")		
+	'Set color based on Ready
+	gui.IssueMaterial.GsMain.AddStyleFormatCondition("gvJobCommitments","Ready","tagReady","equal","Y")
+	gui.IssueMaterial.GsMain.SetStyleFormatConditionProperty("gvJobCommitments","Ready","tagReady","backcolor","LightGreen")
+	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select","VisibleIndex",0)
+	'CellForeColor
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Part","CellForeColor",V.Color.Blue)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job","CellForeColor",V.Color.Blue)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Part","CellFontUnderline",True)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job","CellFontUnderline",True)	
+	'Width
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Part","MinWidth","160")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Location","MinWidth","25")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Description", "MinWidth","200")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPart", "MinWidth","160")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPL", "MinWidth","30")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Flag_Hold", "MinWidth","30")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Priority", "MinWidth","30")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Customer", "MinWidth","60")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job", "MinWidth","50")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Suffix", "MinWidth","50")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Sequence", "MinWidth","60")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Notes", "MinWidth","100")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","QtyRequired", "MinWidth","90")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Qty_OnHand", "MinWidth","90")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","QtyOnOrder", "MinWidth","90")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Total_Required", "MinWidth","90")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","RunningTotal", "MinWidth","90")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Ready", "MinWidth","45")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Customer_PO", "MinWidth","45")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Comments_1", "MinWidth","45")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Comments_2", "MinWidth","45")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select", "MaxWidth","45")
+	'HeaderHAlignment
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Location", "HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPL","HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Flag_Hold","HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Priority", "HeaderHAlignment","center")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job", "HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Suffix", "HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Sequence", "HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Customer", "HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Date_Due", "HeaderHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","QtyRequired", "HeaderHAlignment","far")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Qty_OnHand", "HeaderHAlignment","far")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","QtyOnOrder", "HeaderHAlignment","far")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Total_Required", "HeaderHAlignment","far")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","RunningTotal", "HeaderHAlignment","far")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Ready", "HeaderHAlignment","Center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Customer_PO", "HeaderHAlignment","Center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Comments_1", "HeaderHAlignment","Center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Comments_2", "HeaderHAlignment","Center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select", "HeaderHAlignment","Center")
+	'Cell Alignment
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPL","CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Flag_Hold","CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Priority", "CellHAlignment","center")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Location", "CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job", "CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Suffix", "CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Sequence", "CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Customer", "CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Date_Due", "CellHAlignment","center")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Ready", "CellHAlignment","center")	
+	'For Rowcell Click
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Part","AllowEdit",False)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Part","ReadOnly",True)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job","AllowEdit",False)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Job","ReadOnly",True)	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Notes","AllowEdit",True)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Notes","ReadOnly",False)	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select","AllowEdit",True)
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select","ReadOnly",False)	
+	'Caption
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","QtyRequired","Caption", "Qty Required")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","QtyOnOrder","Caption", "Qty On Order")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","RunningTotal","Caption", "Running Total")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Total_Required","Caption", "Total Required")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Qty_Onhand","Caption", "On Hand")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Date_Due","Caption", "Due Date")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Location","Caption", "Locn")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Sequence","Caption", "Seq")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPart","Caption", "Mfg Part")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPL","Caption", "Mfg PL")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Flag_Hold","Caption", "Hold")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Customer_PO","Caption", "Customer PO")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Comments_1","Caption", "Comments 1")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Comments_2","Caption", "Comments 2")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select","Caption", "Sel")
+	'Fixed left
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Select","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Part","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Location","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Description","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPart","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","MfgPL","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Flag_Hold","Fixed","Left")
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Priority","Fixed","Left")	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Ready","Fixed","Left")	
+	
+	gui.IssueMaterial.GsMain.SetColumnProperty("gvJobCommitments","Date_Due","DisplayCustomDateTime","d")
+
+f.Intrinsic.Control.If(v.Global.sGVR,<>,"RESET")
+	f.Intrinsic.Control.CallSub(Deserialize)
+f.Intrinsic.Control.EndIf
+
+	gui.IssueMaterial.GsMain.ResumeLayout()
+	gui.IssueMaterial.GsMain.MainView("gvJobCommitments")
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}GAB Version: {5}}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry	
+Program.Sub.LoadGVJobCommitments.End
+
+Program.Sub.GsMain_RowCellClick.Start
+f.Intrinsic.Control.Try	
+	v.Local.sError.Declare
+	
+	F.Intrinsic.Control.If(V.Args.Column, =, "Part")
+		F.Intrinsic.String.Concat(V.DataTable.dtJCMT(V.Args.RowIndex).Part!FieldVal, "!*! ", V.Global.sRet)
+		F.Global.General.CallWrapperAsync(300010, V.Global.sRet)
+	F.Intrinsic.Control.ElseIf(V.Args.Column, =, "Job")
+		F.Intrinsic.String.Build("{0}!*!{1}!*! !*! !*! !*! !*! ", V.DataTable.dtJCMT(V.Args.RowIndex).Job!FieldVal, V.DataTable.dtJCMT(V.Args.RowIndex).Suffix!FieldVal,V.Global.sRet)
+		F.Global.General.CallWrapperAsync(450150, V.Global.sRet)
+	F.Intrinsic.Control.EndIf
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}GAB Version: {5}}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry		
+Program.Sub.GsMain_RowCellClick.End
+
+Program.Sub.CreateContextMenus.Start
+f.Intrinsic.Control.Try	
+	v.Local.sError.Declare
+	
+	gui.IssueMaterial..ContextMenuCreate("ctxJobCommitments")
+	gui.IssueMaterial.GsMain.ContextMenuAttach("ctxJobCommitments")
+	
+	gui.IssueMaterial..ContextMenuAddItem("ctxJobCommitments","Export",0,"Export")	
+	gui.IssueMaterial..ContextMenuAddItem("ctxJobCommitments","Refresh",0,"Refresh")	
+	gui.IssueMaterial..ContextMenuAddItem("ctxJobCommitments","Clear Sorting",0,"Clear Sorting")
+	gui.IssueMaterial..ContextMenuAddItem("ctxJobCommitments","Reset Format",0,"Reset Format")
+	
+	gui.IssueMaterial..ContextMenuSetItemEventHandler("ctxJobCommitments","Export","MenuClickExport")
+	gui.IssueMaterial..ContextMenuSetItemEventHandler("ctxJobCommitments","Refresh","Refresh")	
+	gui.IssueMaterial..ContextMenuSetItemEventHandler("ctxJobCommitments","Clear Sorting","ClearSorting")
+	gui.IssueMaterial..ContextMenuSetItemEventHandler("ctxJobCommitments","Reset Format","Format_Reset")
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}GAB Version: {5}}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry	
+Program.Sub.CreateContextMenus.End
+
+Program.Sub.MenuClickExport.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	
+	V.Local.sFileExport.Declare
+	V.Local.bExcel.Declare
+	V.Local.bFileLocked.Declare
+	V.Local.sMsg.Declare
+	V.Local.sForm.Declare(String,"Form")
+	V.Local.sControl.Declare(String, "GsMain")
+	V.Local.bChart.Declare
+	
+	F.Intrinsic.Control.If(V.Local.bChart,=,False)
+		F.Automation.MSExcel.CheckPresence(V.Local.bExcel)
+		F.Intrinsic.Control.If(V.Local.bExcel)
+			F.Intrinsic.String.Build("{0}\GAB_5676_IssueMaterialDashboard.xlsx",V.Caller.LocalGssTempDir,V.Local.sFileExport)
+			F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+			F.Intrinsic.Control.If(V.Local.bFileLocked)
+				F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+				F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+			F.Intrinsic.Control.Else
+				gui.IssueMaterial.GsMain.Export(V.Local.sFileExport,"xlsx")
+				F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			F.Intrinsic.String.Build("{0}\GAB_5676_IssueMaterialDashboard.csv",V.Caller.LocalGssTempDir,V.Local.sFileExport)
+			F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+			F.Intrinsic.Control.If(V.Local.bFileLocked)
+				F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+				F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+			F.Intrinsic.Control.Else
+				gui.IssueMaterial.GsMain.Export(V.Local.sFileExport,"csv")
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("{0}\{1}.jpg",V.Caller.LocalGSSTempDir,V.Local.sControl,V.Local.sFileExport)
+		Gui.[V.Local.sForm].[V.Local.sControl].ImageToFile("JPEG",V.Local.sFileExport)
+		F.Intrinsic.Task.ShellExec(0,"Open",V.Local.sFileExport,"","",0)
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub("Unload")
+	F.Intrinsic.Control.EndTry
+Program.Sub.MenuClickExport.End
+
+Program.Sub.ClearSorting.Start
+gui.IssueMaterial.GsMain.ClearSorting("gvJobCommitments")
+Program.Sub.ClearSorting.End
+
+Program.Sub.Form_UnLoad.Start
+f.Intrinsic.Control.CallSub("Unload")
+Program.Sub.Form_UnLoad.End
+
+Program.Sub.UnLoad.Start
+f.Intrinsic.Control.Try
+v.Local.sError.Declare
+
+f.Intrinsic.Control.CallSub(Serialize)
+
+F.Intrinsic.Control.If(V.ODBC.conx.State,=,1)
+	F.ODBC.Connection!conx.close
+F.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.End
+
+F.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Subroutine Error {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub("Unload")
+F.Intrinsic.Control.EndTry
+Program.Sub.UnLoad.End
+
+Program.Sub.GsMain_CellValueChanged.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+V.Local.sJob.Declare
+V.Local.sSuffix.Declare
+V.Local.sSequence.Declare
+V.Local.sTextTbl.Declare
+V.Local.sSql.Declare
+V.Local.sDate.Declare
+
+F.Intrinsic.String.Format(V.Ambient.Date, "yyyy-mm-dd", V.Local.sDate)
+	
+f.Intrinsic.Control.SelectCase(V.Args.column)
+
+	F.Intrinsic.Control.Case("Notes")
+	
+		gui.IssueMaterial.GsMain.GetCellValueByColumnName("gvJobCommitments","Job",V.Args.RowIndex,V.Local.sJob)
+		gui.IssueMaterial.GsMain.GetCellValueByColumnName("gvJobCommitments","Suffix",V.Args.RowIndex,V.Local.sSuffix)
+		gui.IssueMaterial.GsMain.GetCellValueByColumnName("gvJobCommitments","Sequence",V.Args.RowIndex,V.Local.sSequence)
+		F.Intrinsic.String.Replace(V.Args.Value,"'","''",V.Local.sTextTbl)
+		F.Intrinsic.String.Build("SELECT * From GAB_5676_NOTES WHERE JOB = '{0}' AND SUFFIX = '{1}' AND SEQUENCE = '{2}';",V.Local.sJob,V.Local.sSuffix,V.Local.sSequence,V.Local.sSql)
+		F.ODBC.Connection!conx.OpenRecordsetRW("rstNotes",V.Local.sSQL)
+		
+		F.Intrinsic.Control.If(V.ODBC.conx!rstNotes.EOF,=,True)
+		
+			F.Intrinsic.String.Build("INSERT INTO GAB_5676_NOTES(JOB,SUFFIX,SEQUENCE,NOTES,DATE_CREATED) VALUES('{0}','{1}','{2}','{3}','{4}');",V.Local.sJob,V.Local.sSuffix,V.Local.sSequence,V.Local.sTextTbl,V.Local.sDate,V.Local.sSQL)
+			
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+			
+		F.Intrinsic.Control.Else
+		
+			F.Intrinsic.String.Build("UPDATE GAB_5676_NOTES SET NOTES = '{0}', DATE_CREATED ='{1}' WHERE JOB='{2}' AND SUFFIX ='{3}' AND SEQUENCE ='{4}';",V.Local.sTextTbl,V.Local.sDate,V.Local.sJob,V.Local.sSuffix,V.Local.sSequence,V.Local.sSQL)
+			
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+			
+		F.Intrinsic.Control.EndIf
+		
+		F.ODBC.conx!rstNotes.Close
+		
+f.Intrinsic.Control.EndSelect
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.GsMain_CellValueChanged.End
+
+Program.Sub.cmdIssue_Click.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.iCount.Declare
+v.Global.iLot.Set(0)
+
+f.Data.DataTable.Compute("dtJCMT","count(SELECT)","SELECT = true",v.Local.iCount)
+
+f.Intrinsic.Control.If(v.Local.iCount,>,0)
+
+	f.Intrinsic.Control.If(v.DataTable.dtSelect.Exists,=,true)
+	
+		f.Data.DataTable.Close("dtSelect")
+		
+	f.Intrinsic.Control.EndIf
+	
+	f.Intrinsic.Control.If(v.DataTable.dtLot.Exists,=,true)
+	
+		f.Data.DataTable.Close("dtPart")
+		
+	f.Intrinsic.Control.EndIf
+	
+	f.Intrinsic.Control.If(v.DataTable.dtJobs.Exists,=,true)
+	
+		f.Data.DataTable.Close("dtJobs")
+		
+	f.Intrinsic.Control.EndIf
+	
+	f.Data.DataView.Create("dtJCMT","dvFilter",22,"SELECT = true","PART ASC")
+	f.Data.DataView.ToDataTable("dtJCMT","dvFilter","dtSelect",true)
+	f.Data.DataView.ToDataTableDistinct("dtJCMT","dvFilter","dtPart","PART",true)
+	f.Data.DataView.ToDataTableDistinct("dtJCMT","dvFilter","dtJobs","JOBSUF",true)
+	f.Data.DataTable.AddExpressionColumn("dtJobs","JOB","string","SUBSTRING(JOBSUF,1,6)")
+	f.Data.DataTable.AddExpressionColumn("dtJobs","SUFFIX","string","SUBSTRING(JOBSUF,7,3)")
+	f.Data.DataView.Close("dtJCMT","dvFilter")
+	
+	f.Intrinsic.Control.CallSub(Lot_Next)
+
+f.Intrinsic.Control.Else
+
+	f.Intrinsic.UI.Msgbox("No materials have been selected.  Please make a selection and try again.","ERROR")
+
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdIssue_Click.End
+
+Program.Sub.MultiLot_UnLoad.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+gui.MultiLot..Visible(false)
+
+gui.IssueMaterial..Enabled(true)
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.MultiLot_UnLoad.End
+
+Program.Sub.MultiJob_UnLoad.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+gui.MultiJob..Visible(false)
+
+f.Intrinsic.Control.CallSub(Lot_Next)
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.MultiJob_UnLoad.End
+
+Program.Sub.cmdJobIssue_Click.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.fQTY.Declare
+
+f.Intrinsic.Control.If(v.DataTable.dtLotSelect.Exists,=,true)
+
+	f.Data.DataTable.Close("dtLotSelect")
+	
+f.Intrinsic.Control.EndIf
+
+f.Data.DataTable.Compute("dtLot","sum(QTY_LOT)","LOT_SELECT = true",v.Local.fQTY)
+
+f.Intrinsic.Control.If(v.Local.fQTY,>,0)
+
+	gui.MultiLot..Visible(false)
+	
+	f.Data.DataView.SetFilter("dtLot","dvLot","LOT_SELECT = true")
+	f.Data.DataView.ToDataTable("dtLot","dvLot","dtLotSelect",true)
+	v.Global.sBin.Set(v.DataTable.dtLotSelect(0).BIN!FieldVal)
+	v.Global.sLot.Set(v.DataTable.dtLotSelect(0).LOT!FieldVal)
+	v.Global.sRev.Set(v.DataTable.dtLotSelect(0).REV!FieldVal)
+	v.Global.sHeat.Set(v.DataTable.dtLotSelect(0).HEAT!FieldVal)
+	v.Global.sSerial.Set(v.DataTable.dtLotSelect(0).SERIAL_NUMBER!FieldVal)
+	v.Global.sLoc.Set(v.DataTable.dtLotSelect(0).LOCATION!FieldVal)
+	v.Global.fQtyIssue.Set(v.DataTable.dtLotSelect(0).QTY_LOT!FieldVal)
+	
+	f.Intrinsic.Control.CallSub(Job_Next)
+	
+f.Intrinsic.Control.Else
+
+	f.Intrinsic.UI.Msgbox("No QTY entered.  Please enter a QTY for the selected Lot.","ERROR")
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdJobIssue_Click.End
+
+Program.Sub.Lot_Next.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.sSQL.Declare
+v.Local.sTitle.Declare
+v.Local.sFilter.Declare
+v.Local.fTotal.Declare
+v.Local.sMSG.Declare
+v.Local.bOpt.Declare
+
+gui.IssueMaterial..Enabled(false)
+
+f.Intrinsic.Control.If(v.Global.iLot,>,v.DataTable.dtPart.RowCount--)
+
+	gui.IssueMaterial..Enabled(true)
+	
+	f.Intrinsic.Control.If(v.Global.iRecIssue,>,0)
+		
+		v.Global.iRecIssue.Set(0)
+		f.Intrinsic.Control.CallSub(Refresh)
+		
+	f.Intrinsic.Control.EndIf
+	
+	f.Intrinsic.Control.ExitSub
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.If(v.DataTable.dtLot.Exists,=,true)
+
+	f.Data.DataView.Close("dtLot","dvLot")
+	f.Data.DataTable.Close("dtLot")
+	
+f.Intrinsic.Control.EndIf
+
+v.Global.sPart.Set(v.DataTable.dtPart(v.Global.iLot).PART!FieldVal)
+
+f.Global.General.ReadOption("70008",0,,v.Local.bOpt)
+
+f.Intrinsic.Control.If(v.Local.bOpt,=,true)
+	f.Intrinsic.String.Build("select left(PART,17) as PART, ltrim(right(PART,3)) as REV, LOCATION, LOT, BIN, HEAT, SERIAL_NUMBER, UNIT_COST, QUANTITY from V_ITEM_MASTER where PART = '{0}' and QUANTITY > '0'",v.Global.sPart,v.Local.sSQL)
+f.Intrinsic.Control.Else
+	f.Intrinsic.String.Build("select PART, rtrim(' ') as REV, LOCATION, LOT, BIN, HEAT, SERIAL_NUMBER, UNIT_COST, QUANTITY from V_ITEM_MASTER where PART = '{0}' and QUANTITY > '0'",v.Global.sPart,v.Local.sSQL)
+f.Intrinsic.Control.EndIf
+
+f.Data.DataTable.CreateFromSQL("dtLot","conx",v.Local.sSQL,true)
+f.Data.DataTable.AddColumn("dtLot","LOT_SELECT","boolean")
+f.Data.DataTable.AddColumn("dtLot","QTY_LOT","float")
+f.Data.DataTable.SetValue("dtLot",-1,"LOT_SELECT",false)
+f.Data.DataTable.SetValue("dtLot",-1,"QTY_LOT","0")
+f.Data.DataView.Create("dtLot","dvLot",22)
+
+gui.MultiLot.GsGcLot.AddGridviewFromDataview("gvLot","dtLot","dvLot")
+
+f.Data.DataTable.SetValue("dtJCMT",-1,"SELECT",false)
+
+f.Intrinsic.String.Build("Material Lot(s) for Part: {0}",v.Global.sPart,v.Local.sTitle)
+Gui.MultiLot..Caption(v.Local.sTitle)
+
+f.Intrinsic.String.Build("PART = '{0}'",v.Global.sPart,v.Local.sFilter)
+f.Data.DataTable.Compute("dtSelect","sum(QtyRequired)",v.Local.sFilter,v.Local.fTotal)
+gui.MultiLot.txtMatch.Text(v.Local.fTotal)
+v.Global.fQtyMatch.Set(v.Local.fTotal)
+
+gui.MultiLot..ApplyMasks(true)
+
+f.Intrinsic.Control.If(v.DataTable.dtLot.RowCount,>,0)
+
+	f.Intrinsic.Control.CallSub(Lot_Format)
+	
+	f.Intrinsic.Math.Add(v.Global.iLot,1,v.Global.iLot)
+	
+	f.Intrinsic.Control.If(v.DataTable.dtLot.RowCount,=,1)
+		
+		f.Data.DataTable.SetValue("dtLot",0,"LOT_SELECT",true)
+		f.Intrinsic.Control.CallSub(GsGcLot_CellValueChanged,"Column","LOT_SELECT","RowIndex","0")
+		
+	f.Intrinsic.Control.EndIf
+	
+f.Intrinsic.Control.Else
+
+	f.Intrinsic.String.Build("No Lots available for Part: {0}.",v.Global.sPart,v.Local.sMSG)
+	f.Intrinsic.UI.Msgbox(v.Local.sMSG,"ERROR")
+	
+	f.Intrinsic.Math.Add(v.Global.iLot,1,v.Global.iLot)
+	
+	f.Intrinsic.Control.CallSub(Lot_Next)
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.Lot_Next.End
+
+Program.Sub.Lot_Format.Start
+'GENERATE FORMATTING FOR ALL OF THE COLUMNS IN THE GRIDVIEW
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.i.Declare
+
+gui.MultiLot.GsGcLot.Visible(false)
+gui.MultiLot.GsGcLot.SuspendLayout
+
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","Caption","")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","HeaderFontBold","TRUE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","HeaderHAlignment","CENTER")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","CellHAlignment","CENTER")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","MinWidth",)
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","MaxWidth",)
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","DisplayCustomNumeric","$###,##0.00")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","ReadOnly","TRUE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","AllowEdit","FALSE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","","VisibleIndex",v.Local.i)
+'f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","Caption","Sel")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","MinWidth",45)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","MaxWidth",45)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","ReadOnly","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","AllowEdit","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT_SELECT","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","Visible",false)
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","Caption","Part")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","HeaderFontBold","TRUE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","HeaderHAlignment","CENTER")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","CellHAlignment","CENTER")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","MinWidth",85)
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","ReadOnly","TRUE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","AllowEdit","FALSE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","PART","VisibleIndex",v.Local.i)
+'f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","Visible",false)
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","Caption","Rev")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","HeaderFontBold","TRUE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","HeaderHAlignment","CENTER")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","CellHAlignment","CENTER")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","MinWidth",85)
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","ReadOnly","TRUE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","AllowEdit","FALSE")
+'gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","REV","VisibleIndex",v.Local.i)
+'f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","Caption","Loc")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","MinWidth",45)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOCATION","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","Caption","Lot")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","LOT","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","Caption","Bin")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","BIN","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","Caption","Heat")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","HEAT","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","Caption","Serial")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","SERIAL_NUMBER","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","Caption","Unit Cost")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","DisplayCustomNumeric","###,##0.00")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","UNIT_COST","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","Caption","Qty Avail")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","DisplayCustomNumeric","###,##0.0000")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","ReadOnly","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","AllowEdit","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QUANTITY","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","Caption","Qty Issue")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","HeaderFontBold","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","HeaderHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","CellHAlignment","CENTER")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","MinWidth",85)
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","DisplayCustomNumeric","###,##0.0000")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","ReadOnly","FALSE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","AllowEdit","TRUE")
+gui.MultiLot.GsGcLot.SetColumnProperty("gvLot","QTY_LOT","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiLot.GsGcLot.MainView("gvLot")
+
+gui.MultiLot.GsGcLot.ResumeLayout
+gui.MultiLot.GsGcLot.Visible(true)
+
+gui.MultiLot..Visible(true)
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.Lot_Format.End
+
+Program.Sub.Job_Next.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.i.Declare
+v.Local.sSQL.Declare
+v.Local.fRT.Declare
+v.Local.fTotal.Declare
+v.Local.sQty.Declare
+
+gui.IssueMaterial..Enabled(false)
+
+f.Intrinsic.Control.If(v.DataTable.dtJobIssue.Exists,=,true)
+
+	f.Data.DataView.Close("dtJobIssue","dvJobIssue")
+	f.Data.DataTable.Close("dtJobIssue")
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtJobs.RowCount--,1)
+
+	f.Intrinsic.Control.If(v.Local.i,=,0)
+	
+		f.Intrinsic.String.Build("select JOB, SUFFIX, SEQ, PART, DESCRIPTION, HOURS_ESTIMATED-HOURS_ACTUAL as QTY_OPEN from V_JOB_OPERATIONS where (JOB = '{0}' and SUFFIX = '{1}' and PART = '{2}')",v.DataTable.dtJobs(v.Local.i).JOB!FieldVal,v.DataTable.dtJobs(v.Local.i).SUFFIX!FieldVal,v.Global.sPart,v.Local.sSQL)
+
+	f.Intrinsic.Control.Else
+	
+		f.Intrinsic.String.Build("{0} or (JOB = '{1}' and SUFFIX = '{2}' and PART = '{3}')",v.Local.sSQL,v.DataTable.dtJobs(v.Local.i).JOB!FieldVal,v.DataTable.dtJobs(v.Local.i).SUFFIX!FieldVal,v.Global.sPart,v.Local.sSQL)
+	
+	f.Intrinsic.Control.EndIf
+	
+f.Intrinsic.Control.Next(v.Local.i)
+
+f.Intrinsic.String.Build("{0} order by JOB, SUFFIX",v.Local.sSQL,v.Local.sSQL)
+
+f.Data.DataTable.CreateFromSQL("dtJobIssue","conx",v.Local.sSQL,true)
+f.Data.DataTable.AddColumn("dtJobIssue","LOCATION","string")
+f.Data.DataTable.AddColumn("dtJobIssue","QTY_ISSUE","float")
+f.Data.DataTable.AddColumn("dtJobIssue","LOT_ISSUE","string")
+f.Data.DataTable.SetValue("dtJobIssue",-1,"LOCATION",v.Global.sLoc)
+f.Data.DataTable.SetValue("dtJobIssue",-1,"QTY_ISSUE","0")
+f.Data.DataTable.SetValue("dtJobIssue",-1,"LOT_ISSUE",v.Global.sLot)
+f.Data.DataView.Create("dtJobIssue","dvJobIssue",22)
+gui.MultiJob.GsGcIssue.AddGridviewFromDataview("gvJobIssue","dtJobIssue","dvJobIssue")
+
+f.Intrinsic.Control.If(v.DataTable.dtJobIssue.RowCount,>,0)
+
+	v.Local.fRT.Set(v.Global.fQtyIssue)
+	
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtJobIssue.RowCount--,1)
+	
+		f.Intrinsic.Control.If(v.DataTable.dtJobIssue(v.Local.i).QTY_OPEN!FieldVal,<,v.Local.fRT)
+		
+'			f.Intrinsic.String.Format(v.DataTable.dtJobIssue(v.Local.i).QTY_OPEN!FieldVal,"###,##0.0000",v.Local.sQty)
+			f.Data.DataTable.SetValue("dtJobIssue",v.Local.i,"QTY_ISSUE",v.DataTable.dtJobIssue(v.Local.i).QTY_OPEN!FieldVal)
+			
+		f.Intrinsic.Control.Else
+		
+'			f.Intrinsic.String.Format(v.Local.fRT,"###,##0.0000",v.Local.sQty)
+			f.Data.DataTable.SetValue("dtJobIssue",v.Local.i,"QTY_ISSUE",v.Local.fRT)
+			
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Math.Sub(v.Local.fRT,v.DataTable.dtJobIssue(v.Local.i).QTY_OPEN!FieldVal,v.Local.fRT)
+		f.Intrinsic.Control.If(v.Local.fRT,<,0)
+		
+			v.Local.fRT.Set(0)
+			
+		f.Intrinsic.Control.EndIf
+		
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	f.Data.DataTable.Compute("dtJobIssue","sum(QTY_ISSUE)",,v.Local.fTotal)
+	gui.MultiJob.txtIssue.Text("0")
+	v.Global.fQtyJobs.Set(v.Local.fTotal)
+	
+	f.Intrinsic.Control.CallSub(JobIssue_Format)
+	
+f.Intrinsic.Control.Else
+
+	f.Intrinsic.UI.Msgbox("None of the Jobs selected have an open sequence for this material.  Moving to the next material.","ERROR")
+	f.Intrinsic.Control.CallSub(Lot_Next)
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.Job_Next.End
+
+Program.Sub.JobIssue_Format.Start
+'GENERATE FORMATTING FOR ALL OF THE COLUMNS IN THE GRIDVIEW
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.i.Declare
+v.Local.iRow.Declare
+
+gui.MultiJob.GsGcIssue.Visible(false)
+gui.MultiJob.GsGcIssue.SuspendLayout
+
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","Caption","")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","HeaderFontBold","TRUE")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","HeaderHAlignment","CENTER")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","CellHAlignment","CENTER")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","MinWidth",)
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","MaxWidth",)
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","DisplayCustomNumeric","$###,##0.00")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","ReadOnly","TRUE")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","AllowEdit","FALSE")
+'gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","","VisibleIndex",v.Local.i)
+'f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","Caption","Job")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","MinWidth",85)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","JOB","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","Caption","Suffix")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","MinWidth",65)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SUFFIX","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","Caption","Seq")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","MinWidth",85)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","SEQ","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","Caption","Part")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","MinWidth",85)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","PART","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","Caption","Loc")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","MinWidth",65)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOCATION","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","Caption","Description")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","MinWidth",125)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","DESCRIPTION","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","Caption","Job Qty")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","MinWidth",85)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","DisplayCustomNumeric","###,##0.0000")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_OPEN","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","Caption","Mat. Lot")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","MinWidth",85)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","ReadOnly","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","AllowEdit","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","LOT_ISSUE","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","Caption","Issue Qty")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","HeaderFontBold","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","HeaderHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","CellHAlignment","CENTER")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","MinWidth",85)
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","DisplayCustomNumeric","###,##0.0000")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","ReadOnly","FALSE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","AllowEdit","TRUE")
+gui.MultiJob.GsGcIssue.SetColumnProperty("gvJobIssue","QTY_ISSUE","VisibleIndex",v.Local.i)
+f.Intrinsic.Math.Add(v.local.i,1,v.Local.i)
+
+f.Intrinsic.Control.For(v.Local.iRow,0,v.DataTable.dtJobIssue.RowCount--,1)
+	f.Intrinsic.Control.If(v.DataTable.dtJobIssue(v.Local.iRow).QTY_OPEN!FieldVal,>,v.DataTable.dtJobIssue(v.Local.iRow).QTY_ISSUE!FieldVal)
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"ForeColor","red")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Fontbold","true")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Halignment","center")
+	f.Intrinsic.Control.Else
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"ForeColor","black")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Fontbold","false")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Halignment","center")
+	f.Intrinsic.Control.EndIf
+f.Intrinsic.Control.Next(v.Local.iRow)
+
+gui.MultiJob.GsGcIssue.MainView("gvJobIssue")
+
+gui.MultiJob.GsGcIssue.ResumeLayout
+gui.MultiJob.GsGcIssue.Visible(true)
+
+gui.MultiJob..Visible(true)
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.JobIssue_Format.End
+
+Program.Sub.GsGcLot_CellValueChanged.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.fQTY.Declare
+v.Local.fMatch.Declare
+
+v.Local.fMatch.Set(v.Screen.MultiLot!txtMatch.Text)
+
+f.Intrinsic.Control.If(v.Args.Column,=,"LOT_SELECT")
+
+	f.Intrinsic.Control.BlockEvents
+	f.Data.DataTable.SetValue("dtLot",-1,"QTY_LOT","0")
+	f.Data.DataTable.SetValue("dtLot",-1,"LOT_SELECT",false)
+	f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"LOT_SELECT",true)
+	f.Intrinsic.Control.UnBlockEvents
+	
+	f.Intrinsic.Control.If(v.Local.fMatch,>,v.DataTable.dtLot(v.Args.RowIndex).QUANTITY!FieldVal)
+	
+		f.Intrinsic.UI.Msgbox("QTY Entered is greater than available QTY.  Setting to available QTY.","ERROR")
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"QTY_LOT",v.DataTable.dtLot(v.Args.RowIndex).QUANTITY!FieldVal)
+	
+	f.Intrinsic.Control.ElseIf(v.DataTable.dtLot(v.Args.RowIndex).QUANTITY!FieldVal,>,v.Local.fMatch)
+	
+		f.Intrinsic.UI.Msgbox("QTY Entered is greater than QTY required.  Setting to QTY required.","ERROR")
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"QTY_LOT",v.Local.fMatch)
+		
+	f.Intrinsic.Control.Else
+	
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"QTY_LOT",v.Local.fMatch)
+		
+	f.Intrinsic.Control.EndIf
+	
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.If(v.Args.Column,=,"QTY_LOT")
+
+	v.Local.fQTY.Set(v.DataTable.dtLot(v.Args.RowIndex).QTY_LOT!FieldVal)
+	
+	f.Intrinsic.Control.If(v.Local.fQTY,>,v.DataTable.dtLot(v.Args.RowIndex).QUANTITY!FieldVal)
+	
+		f.Intrinsic.UI.Msgbox("QTY Entered is greater than available QTY.  Setting to available QTY.","ERROR")
+		f.Intrinsic.Control.BlockEvents
+		f.Data.DataTable.SetValue("dtLot",-1,"QTY_LOT","0")
+		f.Data.DataTable.SetValue("dtLot",-1,"LOT_SELECT",false)
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"QTY_LOT",v.DataTable.dtLot(v.Args.RowIndex).QUANTITY!FieldVal)
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"LOT_SELECT",true)
+		f.Intrinsic.Control.UnBlockEvents
+		
+	f.Intrinsic.Control.ElseIf(v.Local.fQTY,>,v.Local.fMatch)
+	
+		f.Intrinsic.UI.Msgbox("QTY Entered is greater than QTY required.  Setting to QTY required.","ERROR")
+		f.Intrinsic.Control.BlockEvents
+		f.Data.DataTable.SetValue("dtLot",-1,"QTY_LOT","0")
+		f.Data.DataTable.SetValue("dtLot",-1,"LOT_SELECT",false)
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"QTY_LOT",v.Local.fMatch)
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"LOT_SELECT",true)
+		f.Intrinsic.Control.UnBlockEvents
+		
+	f.Intrinsic.Control.Else
+	
+		f.Intrinsic.Control.BlockEvents
+		f.Data.DataTable.SetValue("dtLot",-1,"QTY_LOT","0")
+		f.Data.DataTable.SetValue("dtLot",-1,"LOT_SELECT",false)
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"QTY_LOT",v.Local.fQTY)
+		f.Data.DataTable.SetValue("dtLot",v.Args.RowIndex,"LOT_SELECT",true)
+		f.Intrinsic.Control.UnBlockEvents
+		
+	f.Intrinsic.Control.EndIf
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.GsGcLot_CellValueChanged.End
+
+Program.Sub.GsGcIssue_CellValueChanged.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.fTotal.Declare
+v.Local.iRow.Declare
+
+f.Intrinsic.Control.If(v.Args.Column,=,"QTY_ISSUE")
+
+	f.Data.DataTable.Compute("dtJobIssue","sum(QTY_ISSUE)",,v.Local.fTotal)
+	f.Intrinsic.Math.Sub(v.Global.fQtyJobs,v.Local.fTotal,v.Local.fTotal)
+	gui.MultiJob.txtIssue.Text(v.Local.fTotal)
+	
+	f.Intrinsic.Control.If(v.Local.fTotal,<,0)
+	
+		gui.MultiJob.txtIssue.ForeColor("red")
+		gui.MultiJob.txtIssue.FontStyle(true,false,false,false)
+		
+	f.Intrinsic.Control.Else
+	
+		gui.MultiJob.txtIssue.ForeColor("black")
+		gui.MultiJob.txtIssue.FontStyle(false,false,false,false)
+		
+	f.Intrinsic.Control.EndIf
+	
+	gui.MultiJob..ApplyMasks(true)
+	
+	f.Intrinsic.Control.For(v.Local.iRow,0,v.DataTable.dtJobIssue.RowCount--,1)
+	f.Intrinsic.Control.If(v.DataTable.dtJobIssue(v.Local.iRow).QTY_OPEN!FieldVal,>,v.DataTable.dtJobIssue(v.Local.iRow).QTY_ISSUE!FieldVal)
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"ForeColor","red")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Fontbold","true")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Halignment","center")
+	f.Intrinsic.Control.Else
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"ForeColor","black")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Fontbold","false")
+		Gui.MultiJob.GsGcIssue.SetCellAppearance("gvJobIssue",7,V.Local.iRow,"Halignment","center")
+	f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Next(v.Local.iRow)
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.GsGcIssue_CellValueChanged.End
+
+Program.Sub.cmdConfirm_Click.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Local.i.Declare
+v.Local.fIssue.Declare
+v.Local.sQtyIssue.Declare
+v.Local.sSQL.Declare
+v.Local.iSeq.Declare
+v.Local.sPad.Declare
+v.Local.sPart.Declare
+v.Local.sPDate.Declare
+v.Local.sName.Declare
+v.Local.sParam.Declare
+v.Local.bOpt.Declare
+
+f.Intrinsic.String.Format(v.Ambient.Date,"yyyy-mm-dd",v.Local.sPDate)
+
+gui.MultiJob..Enabled(false)
+
+v.Local.iSeq.Set(1)
+
+f.Global.General.ReadOption("70008",0,,v.Local.bOpt)
+
+v.Local.fIssue.Set(v.Screen.MultiJob!txtIssue.Text)
+gui.MultiJob..ApplyMasks(true)
+
+f.Intrinsic.Control.If(v.Local.fIssue,>=,0)
+
+	f.ODBC.Connection!conx.Execute("DELETE from Z_SF_ISSUE_DROP where BIRUNID = '6436'")
+	
+	f.Data.DataView.Create("dtJobIssue","dvJobFilter",22,"QTY_ISSUE > 0","JOB DESC, SUFFIX DESC")
+	f.Data.DataView.ToDataTable("dtJobIssue","dvJobFilter","dtJobLabel",true)
+	f.Data.DataView.Close("dtJobIssue","dvJobFilter")
+
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtJobLabel.RowCount--,1)
+		
+'		f.Intrinsic.Math.Add(v.Local.iSeq,1,v.Local.iSeq)
+		f.Intrinsic.String.LPad(v.Local.iSeq,"0",5,v.Local.sPad)
+		f.Intrinsic.String.Format(v.DataTable.dtJobLabel(v.Local.i).QTY_ISSUE!FieldVal,"###,##0.0000",v.Local.sQtyIssue)
+		
+		f.Intrinsic.String.Build("INSERT INTO Z_SF_ISSUE_DROP (BIRUNID,SEQ,QTY_ON_LABEL,LBL_CREATE_DATE,PART,LOCN,DESCR,INV_UM,PROD_LINE,LOT,BIN,HEAT,SERIAL,WO,WO_SUFFIX,WO_SEQ,WO_DUE_DATE,USER_ID) VALUES ('6436','{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}');",v.Local.sPad,v.Local.sQtyIssue,v.Local.sPDate,v.DataTable.dtJobLabel(v.Local.i).PART!FieldVal,v.Global.sLoc,"","","",v.Global.sLot,v.Global.sBin,v.Global.sHeat,v.Global.sSerial,v.DataTable.dtJobLabel(v.Local.i).JOB!FieldVal,v.DataTable.dtJobLabel(v.Local.i).SUFFIX!FieldVal,v.DataTable.dtJobLabel(v.Local.i).SEQ!FieldVal,v.Local.sPDate,v.Caller.User,v.Local.sSQL)
+		f.ODBC.Connection!conx.Execute(v.Local.sSQL)
+		
+'		f.Intrinsic.Control.If(v.Local.i,<>,v.DataTable.dtJobLabel.RowCount--)
+'			f.Intrinsic.String.Build("{18}('6436','{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}'), {17}",v.Local.sPad,v.Local.sQtyIssue,v.Local.sPDate,v.DataTable.dtJobLabel(v.Local.i).PART!FieldVal,v.Global.sLoc,"","","",v.Global.sLot,v.Global.sBin,v.Global.sHeat,v.Global.sSerial,v.DataTable.dtJobLabel(v.Local.i).JOB!FieldVal,v.DataTable.dtJobLabel(v.Local.i).SUFFIX!FieldVal,v.DataTable.dtJobLabel(v.Local.i).SEQ!FieldVal,v.Local.sPDate,v.Caller.User,v.Ambient.NewLine,v.Local.sSQL,v.Local.sSQL)
+'		f.Intrinsic.Control.Else
+'			f.Intrinsic.String.Build("{17}('6436','{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}');",v.Local.sPad,v.Local.sQtyIssue,v.Local.sPDate,v.DataTable.dtJobLabel(v.Local.i).PART!FieldVal,v.Global.sLoc,"","","",v.Global.sLot,v.Global.sBin,v.Global.sHeat,v.Global.sSerial,v.DataTable.dtJobLabel(v.Local.i).JOB!FieldVal,v.DataTable.dtJobLabel(v.Local.i).SUFFIX!FieldVal,v.DataTable.dtJobLabel(v.Local.i).SEQ!FieldVal,v.Local.sPDate,v.Caller.User,v.Local.sSQL,v.Local.sSQL)
+'		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.bOpt,=,true)
+		
+			f.Intrinsic.String.Left(v.DataTable.dtJobLabel(v.Local.i).PART!FieldVal,17,v.Local.sPart)
+			
+		f.Intrinsic.Control.Else
+		
+			v.Local.sPart.Set(v.DataTable.dtJobLabel(v.Local.i).PART!FieldVal)
+			
+		f.Intrinsic.Control.EndIf
+'PART (Part), REV (Rev), LOC (Location), QTY_ISSUE (Quantity), LOT_ISSUE (Lot), BIN (Bin), HEAT (Heat), SERIAL_NUMBER (Serial), JOB (WONumber), SUFFIX (WOSuffix), SEQ (WOSeq)
+		f.Data.DataTable.AddRow("450100","PART",v.Local.sPart,"Rev",v.Global.sRev,"Location",v.DataTable.dtJobLabel(v.Local.i).LOCATION!FieldVal,"Quantity",v.Local.sQtyIssue,"Lot",v.DataTable.dtJobLabel(v.Local.i).LOT_ISSUE!FieldVal,"Bin",v.Global.sBin,"Heat",v.Global.sHeat,"Serial",v.Global.sSerial,"WONumber",v.DataTable.dtJobLabel(v.Local.i).JOB!FieldVal,"WOSuffix",v.DataTable.dtJobLabel(v.Local.i).SUFFIX!FieldVal,"WOSeq",v.DataTable.dtJobLabel(v.Local.i).SEQ!FieldVal)
+	
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	f.Data.DataTable.Close("dtJobLabel")
+	
+'	f.Intrinsic.String.Build("INSERT INTO Z_SF_ISSUE_DROP (BIRUNID,SEQ,QTY_ON_LABEL,LBL_CREATE_DATE,PART,LOCN,DESCR,INV_UM,PROD_LINE,LOT,BIN,HEAT,SERIAL,WO,WO_SUFFIX,WO_SEQ,WO_DUE_DATE,USER_ID) VALUES {0}{1}",v.Ambient.NewLine,v.Local.sSQL,v.Local.sSQL)
+'	f.ODBC.Connection!conx.Execute(v.Local.sSQL)
+
+	f.Intrinsic.Control.CallSub(450100Sync)
+	
+	f.Intrinsic.Math.Add(v.Global.iRecIssue,1,v.Global.iRecIssue)
+	
+	f.Intrinsic.String.Split("RUN_ID*!*REPORT_ID*!*REPORT_SEQ","*!*",V.Local.sName)
+	
+	f.Intrinsic.String.Build("{0}*!*{1}*!*{2}","6436","1874",v.Local.sPad,v.Local.sParam)
+	F.Intrinsic.String.Split(v.Local.sParam,"*!*",v.Local.sParam)
+	f.Global.BI.PrintReport("1874",0,v.Local.sName,v.Local.sParam,false)
+	
+	gui.MultiJob..Enabled(true)
+	
+	f.Intrinsic.Control.CallSub(MultiJob_UnLoad)
+	
+f.Intrinsic.Control.Else
+
+	f.Intrinsic.UI.Msgbox("Issued amount cannot be greater than QTY available to be issued.  Please change QTY to be issued.","ERROR")
+	gui.MultiJob..Enabled(true)
+	
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdConfirm_Click.End
+
+Program.Sub.Format_Reset.Start
+'RESETS GRID TO DEFAULT FORMATTING FROM gvFormat AND OVERWRITES THE REGISTY WITH THE DEFAULT VALUES
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+v.Global.sGVR.Set("RESET")
+
+f.Intrinsic.Control.CallSub(LoadGVJobCommitments)
+f.Intrinsic.Control.CallSub(serialize)
+
+v.Global.sGVR.Set("")
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End 
+f.Intrinsic.Control.EndTry
+Program.Sub.Format_Reset.End
+
+Program.Sub.Serialize.Start
+'SAVES GRID FORMATTING TO THE REGISTRY
+f.Intrinsic.Control.Try
+
+v.Local.sError.Declare
+v.Local.sSerialize.Declare
+
+gui.IssueMaterial.GsMain.Serialize("gvJobCommitments",V.Local.sSerialize)
+f.Global.Registry.AddValue(V.Caller.User,V.Caller.CompanyCode,"gvJobCommitments",6436,1000,False,"Serialize",False,0,-999.0,1/1/1980,12:00:00 AM,v.Local.sSerialize)
+
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.Serialize.End
+
+Program.Sub.Deserialize.Start
+'READS AND APPLIES GRID FORMATTING FROM THE REGISTRY
+f.Intrinsic.Control.Try
+
+v.Local.sError.Declare
+v.Local.sSerialize.Declare
+
+f.Global.Registry.ReadValue(V.Caller.User,V.Caller.CompanyCode,"gvJobCommitments",6436,1000,6,"",v.Local.sSerialize)
+
+f.Intrinsic.Control.If(V.Local.sSerialize.Trim,<>,"")
+	Gui.IssueMaterial.GsMain.Deserialize(V.Local.sSerialize)
+f.Intrinsic.Control.EndIf
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	f.Intrinsic.UI.Msgbox(V.Local.sError)
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.Deserialize.End
+
+Program.Sub.GsGcLot_RowCellClick.Start
+v.Local.iCol.Declare
+
+f.Intrinsic.Control.If(v.Args.Column,=,"QTY_LOT")
+
+f.Intrinsic.Control.EndIf
+Program.Sub.GsGcLot_RowCellClick.End
+
+Program.Sub.GsGcIssue_RowCellClick.Start
+f.Intrinsic.Control.If(v.Args.Column,=,"QTY_ISSUE")
+
+f.Intrinsic.Control.EndIf
+Program.Sub.GsGcIssue_RowCellClick.End
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
